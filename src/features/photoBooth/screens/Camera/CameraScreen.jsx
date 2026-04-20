@@ -77,6 +77,8 @@ export default function CameraScreen({navigation, route}) {
   const [isShooting, setIsShooting] = useState(false);
   const [photos, setPhotos] = useState([]); // VisionCamera PhotoFile[]
   const [countdown, setCountdown] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false); // 타이머 카운트다운 진행 중 여부
+  const cancelTimerRef = useRef(false); // 타이머 취소 플래그
 
   const flashOverlayOpacity = useSharedValue(0);
   const zoomAnim = useSharedValue(1);
@@ -241,37 +243,61 @@ export default function CameraScreen({navigation, route}) {
     setIsShooting(false);
   }, [actuallyTake, isShooting]);
 
+  const cancelAutoSequence = useCallback(() => {
+    cancelTimerRef.current = true;
+  }, []);
+
   const startAutoSequence = useCallback(async () => {
     if (isShooting) return;
+    cancelTimerRef.current = false;
     setIsShooting(true);
+    setIsTimerRunning(true);
     try {
       let remain = 4 - photos.length;
       while (remain > 0) {
         for (let s = timerSeconds; s > 0; s--) {
+          if (cancelTimerRef.current) return; // 취소 시 즉시 중단
           setCountdown(s);
           // eslint-disable-next-line no-await-in-loop
           await new Promise((r) => setTimeout(r, 1000));
         }
+        if (cancelTimerRef.current) return; // 카운트다운 끝난 직후에도 체크
         setCountdown(0);
+        setIsTimerRunning(false);
         // eslint-disable-next-line no-await-in-loop
         const p = await actuallyTake();
         if (p) setPhotos((prev) => [...prev, p]);
         remain -= 1;
         if (remain > 0) {
+          setIsTimerRunning(true);
           // eslint-disable-next-line no-await-in-loop
           await new Promise((r) => setTimeout(r, 300));
         }
       }
     } finally {
+      cancelTimerRef.current = false;
       setCountdown(0);
+      setIsTimerRunning(false);
       setIsShooting(false);
     }
   }, [isShooting, photos.length, timerSeconds, actuallyTake]);
 
   const onPressShutter = useCallback(() => {
-    if (timerMode === "manual") takeOne();
-    else startAutoSequence();
-  }, [timerMode, takeOne, startAutoSequence]);
+    if (timerMode !== "manual" && isTimerRunning) {
+      // 타이머 카운트다운 중 → 취소
+      cancelAutoSequence();
+    } else if (timerMode === "manual") {
+      takeOne();
+    } else {
+      startAutoSequence();
+    }
+  }, [
+    timerMode,
+    isTimerRunning,
+    cancelAutoSequence,
+    takeOne,
+    startAutoSequence,
+  ]);
 
   // 4장 완료 → 편집으로
   useEffect(() => {
@@ -403,10 +429,18 @@ export default function CameraScreen({navigation, route}) {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={onPressShutter}
-          disabled={isShooting}
-          style={[styles.shutterOuter, isShooting && {opacity: 0.7}]}
+          disabled={isShooting && !isTimerRunning} // 실제 촬영 중(takePhoto)일 때만 비활성화
+          style={[
+            styles.shutterOuter,
+            isShooting && !isTimerRunning && {opacity: 0.7},
+          ]}
         >
-          <View style={styles.shutterInner} />
+          {isTimerRunning ? (
+            // 타이머 카운트다운 중: 취소 버튼 UI
+            <View style={[styles.shutterInner, styles.shutterCancel]} />
+          ) : (
+            <View style={styles.shutterInner} />
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -542,6 +576,12 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     backgroundColor: "#fff",
   },
+  shutterCancel: {
+    borderRadius: 8,
+    backgroundColor: "#FF3B30",
+    width: 32,
+    height: 32,
+  }, // 취소 상태: 빨간 정사각형
 
   switchBtn: {position: "absolute", right: 22, bottom: 40},
 
