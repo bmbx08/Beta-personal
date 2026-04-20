@@ -1,7 +1,7 @@
 // src/components/common/AppText.js
 import React from "react";
-import { Text } from "react-native";
-import { cn } from "@shared/utils/cn";
+import {Text} from "react-native";
+import {cn} from "@shared/utils/cn";
 
 // variant → nativewind 클래스 매핑
 const variantClassNameMap = {
@@ -37,14 +37,16 @@ const variantClassNameMap = {
   numMediumRegular: "font-noto-regular text-num-medium-regular",
 };
 
-export function AppText({ variant = "bodyRegular", className, children, ...rest }) {
+export function AppText({
+  variant = "bodyRegular",
+  className,
+  children,
+  ...rest
+}) {
   const baseClass = variantClassNameMap[variant] || "";
 
   return (
-    <Text
-      {...rest}
-      className={cn(baseClass, className)}
-    >
+    <Text {...rest} className={cn(baseClass, className)}>
       {children}
     </Text>
   );

@@ -16,7 +16,7 @@ export const naverSignIn = async () => {
 
   // 3) accessToken으로 프로필 불러오기
   const profileResult = await NaverLogin.getProfile(
-    successResponse.accessToken
+    successResponse.accessToken,
   );
 
   return {

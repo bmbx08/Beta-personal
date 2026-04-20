@@ -1,10 +1,10 @@
-import React, { memo } from "react";
-import { Pressable, View, StyleSheet } from "react-native";
+import React, {memo} from "react";
+import {Pressable, View, StyleSheet} from "react-native";
 
 const TOUCH_W = 48;
 const TOUCH_H = 48;
 
-const TabBarItem = memo(function TabBarItem({ isFocused, onPress, icon }) {
+const TabBarItem = memo(function TabBarItem({isFocused, onPress, icon}) {
   return (
     <Pressable
       onPress={onPress}
@@ -30,5 +30,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  iconWrap: { zIndex: 1 },
+  iconWrap: {zIndex: 1},
 });

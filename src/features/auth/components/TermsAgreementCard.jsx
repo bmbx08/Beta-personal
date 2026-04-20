@@ -70,7 +70,7 @@ const TermsAgreementCard = ({value, onChange, onPressDetail}) => {
       next.all = over14 && tos && privacyRequired && privacyMarketing;
       onChange(next);
     },
-    [value, onChange]
+    [value, onChange],
   );
 
   const canShowDetail = !!onPressDetail;

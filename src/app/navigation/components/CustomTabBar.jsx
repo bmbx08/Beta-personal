@@ -1,15 +1,15 @@
-import React, { memo } from "react";
-import { View, StyleSheet } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import React, {memo} from "react";
+import {View, StyleSheet} from "react-native";
+import {SafeAreaView, useSafeAreaInsets} from "react-native-safe-area-context";
 import TabBarItem from "./TabBarItem";
-import { getDeepActiveRouteName } from "../utils/navigationHelper";
+import {getDeepActiveRouteName} from "../utils/navigationHelper";
 
 const CustomTabBar = memo(function CustomTabBar({
   state,
   descriptors,
   navigation,
-  colors,        // { active, inactive }
-  hiddenRoutes,  // ["CameraScreen", "EditScreen"]
+  colors, // { active, inactive }
+  hiddenRoutes, // ["CameraScreen", "EditScreen"]
 }) {
   const insets = useSafeAreaInsets();
 
@@ -23,11 +23,11 @@ const CustomTabBar = memo(function CustomTabBar({
   return (
     <SafeAreaView
       edges={[]}
-      style={[styles.safe, { paddingBottom: Math.max(insets.bottom, 6) }]}
+      style={[styles.safe, {paddingBottom: Math.max(insets.bottom, 6)}]}
     >
       <View style={styles.bar}>
         {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
+          const {options} = descriptors[route.key];
           const isFocused = state.index === index;
 
           // ✅ 아이콘 색상만 포커스 상태에 따라 바꿔서 넘김
@@ -68,11 +68,11 @@ export default CustomTabBar;
 
 const styles = StyleSheet.create({
   // 배경을 투명/다크 중 택1. 여기선 다크.
-  safe: { backgroundColor: "#121212" },
+  safe: {backgroundColor: "#121212"},
   bar: {
     flexDirection: "row",
     height: 60,
-    paddingHorizontal: '7%',
+    paddingHorizontal: "7%",
     justifyContent: "space-between",
     alignItems: "center",
     // borderWidth:1,

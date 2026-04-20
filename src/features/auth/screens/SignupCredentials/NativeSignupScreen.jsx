@@ -144,7 +144,7 @@ const NativeSignupScreen = ({navigation}) => {
     // 비밀번호가 바뀌면, 확인란과도 다시 비교
     if (passwordConfirmTouched) {
       setPasswordConfirmError(
-        value === passwordConfirm ? "" : "비밀번호와 일치하지 않아요."
+        value === passwordConfirm ? "" : "비밀번호와 일치하지 않아요.",
       );
     }
   };
@@ -161,7 +161,7 @@ const NativeSignupScreen = ({navigation}) => {
 
     if (passwordConfirmTouched) {
       setPasswordConfirmError(
-        value === password ? "" : "비밀번호와 일치하지 않아요."
+        value === password ? "" : "비밀번호와 일치하지 않아요.",
       );
     }
   };
@@ -169,7 +169,7 @@ const NativeSignupScreen = ({navigation}) => {
   const handleBlurPasswordConfirm = () => {
     setPasswordConfirmTouched(true);
     setPasswordConfirmError(
-      passwordConfirm === password ? "" : "비밀번호와 일치하지 않아요."
+      passwordConfirm === password ? "" : "비밀번호와 일치하지 않아요.",
     );
   };
 
@@ -318,7 +318,7 @@ const NativeSignupScreen = ({navigation}) => {
                         style={styles.passwordIconWrapper}
                         onPress={() =>
                           setIsPasswordConfirmVisible(
-                            (prevVisible) => !prevVisible
+                            (prevVisible) => !prevVisible,
                           )
                         }
                         activeOpacity={0.8}
